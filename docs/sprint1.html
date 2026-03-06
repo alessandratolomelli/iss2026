@@ -46,41 +46,8 @@ R2  L’utente umano deve poter:
 
         <h2>Requirement analysis</h2>
 
-        <pre>
-
-Cosa intende il committente per Cell? Per Cell, dopo aver parlato con il committente, formalizzo il seguente modello:
-<code>
-public interface ICell {
-	void setStatus(boolean v);
-	boolean isAlive(); // la cella come entità ha la capacità di rispondere alla query isAlive
-	void switchCellState();
-}
-</code>
-
-
-<code>
-
-    public interface IGrid {
-	  public int getRowsNum(); //primitiva
-	  public int getColsNum(); //primitiva
-	  public void setCellValue(int x, int y, boolean state); // non primitiva
-	  public ICell getCell(int x, int y); //primitiva
-	  public boolean getCellValue(int x, int y); //primitiva
-	  public void reset(); //pone tutte le celle a morte, non primitiva perhcè potrei usare le set
-}
-</code>
-
-//operazione non primitiva posso esprimerla utilizzando delle primitive, di queste ultime so come sono fatte dentro 
-
-
-        </pre>
-
-
 
         <h2>Problem analysis</h2>
-
-
-
 
 
         <h2>Test plans</h2>
@@ -111,11 +78,11 @@ public interface ICell {
         <br /><br />
     </div>
 
-    <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
-        By studentName email: student@studio.unibo.it,
+    <div style="background-color:rgba(86, 56, 253, 0.9); width:70%;text-align:left;color:white">
+        By Alessandra Tolomelli email: alessandra.tolomell3@studio.unibo.it
         <!-- <img src="./img/mbot-S.jpg" alt="mbot" width="15%" height="15%"> -->
-        <img src="./img/emiglio.png" alt="emiglio" width="15%" height="15%">
-        GIT repo: https://github.com/...
+        <img src="C:\Users\HP\OneDrive\Desktop\personale\fototessera.jpg" alt="fototessera" width="9%" height="10%">
+        GIT repo: https://github.com/alessandratolomelli/iis2026
     </div>
 </body>
 
