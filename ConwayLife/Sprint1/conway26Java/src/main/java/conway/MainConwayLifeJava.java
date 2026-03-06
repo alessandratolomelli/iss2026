@@ -46,6 +46,6 @@ public class MainConwayLifeJava  {
     app.configureTheSystemWitMockOutdev();
     System.out.println("MainConway | ENDS " );  
     }
-    print 1
+   
 
 }
