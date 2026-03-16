@@ -16,7 +16,7 @@ function createMapRep(){
         cellElement.id = `cell(${i},${j})`;
         cellElement.addEventListener('click', function() {
             sendCmdToServer(cellElement.id);  //cell(i,j) 
-            //alert(""+cellElement.id );
+            alert(""+cellElement.id );
         });
         mapContainer.appendChild(cellElement);
         //console.log("created cell", cellElement.id);
