@@ -35,14 +35,16 @@ wscontrol.js
      }
 
  /*3*/socketToGui.onmessage = (event) => {
-         console.log("initWS | onmessage:",event.data);
+         console.log("initWS | onmessa2ge:",event.data);
 		 if( event.data.startsWith("ID:")){
 			console.log("initWS | onmessage:",event.data);
 			pageId= event.data.split(":")[1];
 			addItem( "page ID="  + pageId ); 
 		 }
-		 else if( event.data.startsWith("cell(")){ //deve ricevere da caller
+		 else if( event.data.trim().startsWith("cell(")){ //deve ricevere da caller
+			console.log("funziona");
 			 //addItem(event.data);
+			 sendCmdToServer(event.data);
 			 coords = event.data.replace("cell(", "").replace(")","").split(",");
 			 //addItem(coords);
 			 updateCellColor(coords[0],coords[1],coords[2] )  //In iomap.js

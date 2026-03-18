@@ -123,6 +123,8 @@ public class IoJavalin {
                     	//Funziona se arriva da CallerServerWs es. cell(5,6,1)
                     	pageCtx.send( m.msgContent()); 
                     	//TODO: inviare a LifeController
+                    	
+                    	
                     }else ctx.send(m.msgContent());
                 }catch(Exception e) {
                 	CommUtils.outred("IoJavalin |  error:" + e.getMessage());
