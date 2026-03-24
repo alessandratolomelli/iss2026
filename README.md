@@ -1,6 +1,8 @@
 # issLab2026
  Laboratorio di <b>Ingegneria dei Sistemi Software</b> a.a. 2025/2026 di Alessandra Tolomelli 0001240498
 
+ [index](https://alessandratolomelli.github.io/iss2026/index.html)
+
  [Testo di riferimento:](https://anatali.github.io/issLab2026/_static/docs/Protobook.pdf)
  <!-- comment: [ancora personalizzata] -->
 
@@ -18,6 +20,6 @@
  * [ConwayLife Sprint3](https://alessandratolomelli.github.io/iss2026/sprint3.html): evoluzione del sistema in locale
    usando una pagina HTML come dispositivo di I/O. <i>Distribuzione</i>: Docker yaml.
 
-[index](https://alessandratolomelli.github.io/iss2026/index.html)
+
 
 
