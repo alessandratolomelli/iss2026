@@ -42,6 +42,20 @@ R7 Il deployment del gioco deve avvenire mediante Docker
         <h2>Requirement analysis</h2>
 
         <h2>Problem analysis</h2>
+
+        L'interfaccia IOutDev per la visualizzazione dello stato di una Cell e/o di tutta la Grid è definita come segue:
+        <code>
+        public interface IOutDev {
+            void display(String msg);    //For HMI
+            void displayCell(Cell cell, Grid grid);
+            void displayGrid(Grid grid);
+            void close();
+        }
+
+        </code>
+
+
+
         <img src="./img/problem analysis3.png" alt="Problem Analysis" width="40%" height="40%">
 
         <h2>Test plans</h2>
