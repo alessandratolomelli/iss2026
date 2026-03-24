@@ -44,25 +44,34 @@ R7 Il deployment del gioco deve avvenire mediante Docker
         <p>L'interfaccia IOutDev per la visualizzazione dello stato di una Cell e/o di tutta la Grid è definita come
             segue:</p>
 
-        <div style="display: flex; align-items: flex-start; gap: 20px;">
+        <div style="display: flex; align-items: flex-start; gap: 20px; margin-top: 10px;">
 
-            <pre style="flex: 1; margin: 0;">
-<code>
-public interface IOutDev {
+            <pre style="flex: 1; margin: 0; padding: 10px; background-color: #f4f4f4; border: 1px solid #ddd;"><code>public interface IOutDev {
     void display(String msg);   <span class="comment">//For HMI</span> 
     void displayCell(Cell cell, Grid grid);
     void displayGrid(Grid grid);
     void close();
-}
-</code>
-    </pre>
+}</code></pre>
 
-            <div style="flex: 1; text-align: right;">
+            <div style="flex: 1; display: flex; justify-content: flex-end;">
                 <img src="./img/requirement analysis3.png" alt="Requirement Analysis"
-                    style="width: 100%; max-width: 400px;">
+                    style="width: 100%; max-width: 400px; display: block; margin: 0;">
             </div>
 
         </div>
+
+        <p>Dall'analisi dei requisiti emergono i seguenti punti chiave:</p>
+        <ul>
+            <li><strong>Componente Esterno (R1, R2)</strong>: L'interfaccia non è parte integrante della logica ma
+                un'entità disaccoppiata che comunica tramite il framework Javalin.</li>
+            <li><strong>Ruoli Utente (R3, R5)</strong>: Il sistema deve gestire la distinzione tra <i>Owner</i> (primo
+                connesso con privilegi di comando) e <i>Guest</i> (utenti successivi con sola visualizzazione).</li>
+            <li><strong>Aggiornamento Dinamico (R4, R6)</strong>: La pagina deve riflettere lo stato della griglia in
+                tempo reale senza ricaricamento manuale, segnalando anche eventuali stati di terminazione (griglia vuota
+                o stabile).</li>
+            <li><strong>Containerizzazione (R7)</strong>: L'intero sistema deve essere distribuibile tramite
+                Docker per garantirne la portabilità.</li>
+        </ul>
 
         <h2>Problem analysis</h2>
 
