@@ -21,16 +21,19 @@
         <h2>Requirements</h2>
 
         <pre>
-R1  Realizzare una versione in Java del gioco Life di Conway, come gioco zero-player. 
-    Il gioco consiste nell’introdurre una Griglia di Celle il cui stato (cella ‘viva’ o cella ‘morta’) 
-    evolve come stabilito dallle regole di ConwayLife
+R1  Il gioco Life deve disporre di una pagina HTML come dispositivo di I/O
 
-R2  L’utente umano deve poter:
-     - specificare la configurazione iniziale della griglia del gioco    
-     - vedere l’evoluzione del gioco in forma opportuna 
-        (si veda <a href='https://anatali.github.io/issLab2026/_static/docs/Protobook.pdf#section.6.3'>Problema della vista del gioco</a> )
-     - fermare e far ripartire l’evoluzione del gioco
-     - pulire (a gioco fermo) la configurazione della griglia del gioco
+R2  La pagina deve costituire un componente esterno all'applicazione con un'architettura IoJavalin esterna all'applicazione
+
+R3  Il gestore del gioco sarà l'utente che ha aperto per primo una pagina HTML collegata al gioco: solo la pagina dell'owner avrà pulsanti di comando START/STOP/CLEAN/EXIT attivi
+
+R4  La pagina HTML deve essere aggiornata in modo automatico man mano che il gioco procede
+
+R5 Un utente non owner che si collega mentre il gioco è in corso dovrebbe vedere lo stato attuale della griglia in modo corretto
+
+R6 Opzionalmente: la pagina HTML deve indicare se il gioco continua anche nel caso di griglia vuota o di configurazione stabile
+
+R7 Il deployment del gioco deve avvenire mediante Docker
 </pre>
 
         <h2>Requirement analysis</h2>
