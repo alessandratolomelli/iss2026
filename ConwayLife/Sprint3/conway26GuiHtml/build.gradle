@@ -13,8 +13,7 @@ java {
 
 repositories {
     mavenCentral()
-    //flatDir {   dirs './libs'    }
-    flatDir {   dirs '../unibolibs'    } 
+    flatDir {   dirs '../../../unibolibs'    }
 }
 
 dependencies {
@@ -27,31 +26,17 @@ dependencies {
     implementation name: 'uniboInterfaces'
     implementation name: '2p301'
     implementation name: 'unibo.basicomm23-1.0'
-    
-    /* conway ******************************* */
-    //implementation name: 'conway26Java-1.0'
 
-    /* javalin ******************************* */
-	implementation 'io.javalin:javalin-bundle:6.1.3'
 }
 
 sourceSets {
-main {
-        java {
-            // Rimuovi 'src' generico, usa i percorsi specifici
-            srcDirs = ['src/main/java'] 
-        }
-        resources {
-            // Qui dice a Gradle dove cercare i file statici (HTML, ecc.)
-            srcDirs = ['src/main/resources' ]
-        }
-    }
-    test {
-        java {
-            srcDirs = ['src/test/java', 'src/main/java/test']
-        }
-    }
-  }
+    main.java.srcDirs += 'src'
+    main.java.srcDirs += 'src/main/java'
+    main.java.srcDirs += 'src/main/kotlin'
+    main.java.srcDirs += 'src/main/resources'
+    test.java.srcDirs += 'src/main/java/test'         //test is specific
+    test.java.srcDirs += 'src/main/kotlin/test'
+}
 
 eclipse {
     classpath {
@@ -61,13 +46,13 @@ eclipse {
 
 application {
     //Define the main class for the application.
-    mainClassName    = 'conway26appl.MainConwayGui'
+    mainClassName    = 'main.java.conway.MainConwayLifeJava'
 }
 
 jar {
     println("building jar")
     from sourceSets.main.allSource
-    /*
+    /* in futuro ...
     from('./') {
       include '*.pl'
       include '*.json'
@@ -76,10 +61,52 @@ jar {
     manifest {
         attributes 'Main-Class': "$mainClassName"
     }
+}
+ 
+/* 
+------------------------------------------
+jar con dipendenze per renderlo eseuibile
+------------------------------------------
+*/  
+//Definiamo il percorso della librerie esterna
+def uniboLibsPath = "../../../unibolibs"
+
+task jarfat(type: Jar) {
+	archiveBaseName = 'conway26JavaFat'
+    archiveVersion = '1.0'
+    
+    manifest {
+        attributes(
+            'Main-Class': 'main.java.conway.MainConwayLifeJava',
+            // Costruiamo il Class-Path del manifest usando solo i nomi dei file
+            'Class-Path': configurations.runtimeClasspath.files.collect { "lib/${it.name}" }.join(' ')
+        )
+    }
+    
+    //Includi tutte le classi del  progetto
+    from sourceSets.main.output
+    
     //Gestisci i file duplicati (evita errori di build)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
- 
+//jar xf conway26Java-1.0.jar META-INF/MANIFEST.MF per vedere MANIFEST.MF
+
+// Task per copiare le dipendenze nella cartella build/libs/lib
+task copyDeps(type: Copy) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // Prende i file definiti nelle dipendenze del progetto
+    from configurations.runtimeClasspath
+    // Se hai JAR sparsi nella cartella unibolibs che non sono nel classpath, 
+    // puoi aggiungerli esplicitamente così:
+    from fileTree(uniboLibsPath) { include '*.jar' }
+    
+    into "$buildDir/libs/lib"
+}
+
+// Colleghiamo la copia al processo di build
+build.dependsOn copyDeps
+jarfat.dependsOn copyDeps
+
 task dovesiamo {
     println("projectDir= $projectDir")
     println("buildDir  = $buildDir")

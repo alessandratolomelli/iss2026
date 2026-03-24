@@ -148,4 +148,3 @@ public class CallerServerWs  {
     	CallerServerWs client = new CallerServerWs();
      }
 }
-

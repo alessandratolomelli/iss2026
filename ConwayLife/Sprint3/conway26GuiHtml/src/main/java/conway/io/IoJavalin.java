@@ -7,15 +7,24 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
+import io.javalin.websocket.WsContext;
 import io.javalin.websocket.WsMessageContext;
+import conway.domain.*;
 import unibo.basicomm23.utils.CommUtils;
 import unibo.basicomm23.interfaces.IApplMessage;
 import unibo.basicomm23.msg.ApplMessage;
 
-public class IoJavalin {
+public class IoJavalin implements IOutDev {
+	
+	private WsContext context;
+	
+	private LifeInterface life;
+	private GameController controller; 
 	
 	private WsMessageContext pageCtx ;
+	
 	public IoJavalin() {
+		
         var app = Javalin.create(config -> {
 			config.staticFiles.add(staticFiles -> {
 				staticFiles.directory = "/page";
@@ -100,7 +109,7 @@ public class IoJavalin {
  * Parte Websocket
  * --------------------------------------------
  */
-        
+        // WebSocket per la chat (non utilizzata per ora...)
         app.ws("/chat", ws -> {
             ws.onConnect(ctx -> CommUtils.outgreen("Client connected chat!"));
             ws.onMessage(ctx -> {
@@ -108,39 +117,87 @@ public class IoJavalin {
                 CommUtils.outcyan("IoJavalin |  riceve:" + message);
                 ctx.send("Echo: " + message);
             });
-        });        
+        });
+        
+        // WebSocket per la comunicazione con la pagina (comandi e aggiornamenti)
         app.ws("/eval", ws -> {
             ws.onConnect(ctx -> CommUtils.outgreen("IoJavalin | Client connected eval"));
             ws.onMessage(ctx -> {
                 String message = ctx.message();     
-                CommUtils.outblue("IoJavalin |  eval receives:" + message );
+
+                // CommUtils.outblue("IoJavalin |  eval receives:" + message );
+               
                 try {
                 	IApplMessage m = new ApplMessage(message);
-                    CommUtils.outblue("IoJavalin |  eval:" + m.msgContent() );
-                    if( m.msgContent().equals("ready")) { 
-                    	pageCtx = ctx;  //memorizzo connession pagina
-                    }else if( m.msgContent().contains("cell(")) { 
-                    	//Funziona se arriva da CallerServerWs es. cell(5,6,1)
-                    	pageCtx.send( m.msgContent()); 
-                    	//TODO: inviare a LifeController
+                    String content = m.msgContent();
+                    CommUtils.outblue("IoJavalin |  eval content:" + content );
+                    
+                    if( content.equals("ready")) { 
+                    	pageCtx = ctx;  //memorizzo connessione pagina
+                    	if(life != null) displayGrid(life.getGrid());
+                    } else if( content.equals("start")) { 
+                    	if(controller != null) controller.onStart();
+                    } else if( content.equals("stop")) {
+                    	if(controller != null) controller.onStop();
+                    } else if( content.equals("clear")) {
+                    	if(controller != null) controller.onClear();
+                    } else if( content.contains("cell(")) { 
+                    	// cella(x,y)
+                    	String coords = content.replace("cell(", "").replace(")", "");
+                    	String[] parts = coords.split(",");
+
+                    	int x = Integer.parseInt(parts[0].trim());
+                    	int y = Integer.parseInt(parts[1].trim());
                     	
-                    	
-                    }else ctx.send(m.msgContent());
+						if(controller != null) controller.switchCellState(x, y);
+
+						CommUtils.outmagenta("IoJavalin | cambio stato cella (" + x + "," + y + ")");
+                    } else {
+                    	ctx.send(content); // echo per comandi sconosciuti
+                    }
                 }catch(Exception e) {
-                	CommUtils.outred("IoJavalin |  error:" + e.getMessage());
+                	CommUtils.outred("IoJavalin | errore:" + e.getMessage());
                 }               
             });
         });        
 	}
-	
- 
-	
 
-	
-	public static void main(String[] args) {
-		var resource = IoJavalin.class.getResource("/pages");
-		CommUtils.outgreen("DEBUG: La cartella /page si trova in: " + resource);
-		new IoJavalin();
+	public void setup(LifeInterface life, GameController controller) {
+		this.life = life;
+		this.controller = controller;
+	}
+
+	@Override
+	public void display(String msg) {
+		if (pageCtx != null) {
+			pageCtx.send(msg);
+		}
+	}
+
+	@Override
+	public void displayCell(IGrid grid, int x, int y) {
+		boolean alive = grid.getCellValue(x, y);
+
+		int color = alive ? 1 : 0; // 1=viva, 0=morta
+		if (pageCtx != null) {
+			pageCtx.send("cell(" + x + "," + y + "," + color + ")");
+		}
+	}
+
+
+	@Override
+	public void close() {
+		// Chiudi risorse se necessario
+	}
+
+
+	@Override
+	public void displayGrid(IGrid grid) {
+		for (int i = 0; i < grid.getRowsNum(); i++) {
+			for (int j = 0; j < grid.getColsNum(); j++) {
+				displayCell(grid, i, j);
+			}
+		}
 	}
 
 }
