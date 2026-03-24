@@ -41,28 +41,36 @@ R7 Il deployment del gioco deve avvenire mediante Docker
 
         <h2>Requirement analysis</h2>
 
-        L'interfaccia IOutDev per la visualizzazione dello stato di una Cell e/o di tutta la Grid è
-        definita come segue:
+        <p>L'interfaccia IOutDev per la visualizzazione dello stato di una Cell e/o di tutta la Grid è definita come
+            segue:</p>
 
-        <code>
-        public interface IOutDev {
-            void display(String msg);    //For HMI
-            void displayCell(Cell cell, Grid grid);
-            void displayGrid(Grid grid);
-            void close();
-        }
+        <div style="display: flex; align-items: flex-start; gap: 20px;">
 
-        </code>
+            <pre style="flex: 1; margin: 0;">
+<code>
+public interface IOutDev {
+    void display(String msg);   <span class="comment">//For HMI</span> 
+    void displayCell(Cell cell, Grid grid);
+    void displayGrid(Grid grid);
+    void close();
+}
+</code>
+    </pre>
 
-        <img src="./img/requirement analysis3.png" alt="Requirement Analysis" width="40%" height="40%">
+            <div style="flex: 1; text-align: right;">
+                <img src="./img/requirement analysis3.png" alt="Requirement Analysis"
+                    style="width: 100%; max-width: 400px;">
+            </div>
 
+        </div>
 
         <h2>Problem analysis</h2>
 
-        L'architettura logica del sistema si presenta in questo modo:
+        <p>L'architettura logica del sistema si presenta in questo modo:</p>
 
-        <img src="./img/problem analysis3.png" alt="Problem Analysis" width="40%" height="40%">
-
+        <div>
+            <img src="./img/problem analysis3.png" alt="Problem Analysis" width="80%" height="80%">
+        </div>
 
 
         <h2>Test plans</h2>
