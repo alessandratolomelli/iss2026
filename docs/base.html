@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="css/mystyle.css">
+</head>
+<title>FireflySync</title>
+
+<body>
+    <div id="top">
+        <h1>FireflySync</h1>
+    </div>
+
+    <div class="body">
+
+        <h2>Introduction</h2>
+        <b>Goal</b>: definere un modello qak di un sistema firefly che simula il comportamento di una lucciola.</b>.
+
+        <h2>Requirements</h2>
+        <pre>
+R1  Simulare il comportamento di una lucciola attraverso la definizione di un modello qak.
+
+R2  Estendere il modello per:
+    -3 lucciole
+    -100 lucciole
+
+</pre>
+
+        <h2>Requirement analysis</h2>
+
+        <p>In questo Sprint viene preso in considerazione principalmente il requisito R1. Il secondo
+            requisito verrà analizzato in un secondo momento concentrandosi principalmente sulla
+            sincronizzazione del lampeggiamento.</p>
+        <p>Il modello qak del sistema deve avere nome firefly e le lucciole devono essere rappresentate da actors che
+            lampeggiano inizialmente con una propria frequenza variabile a intervalli di tempo variabili</p>
+
+
+        <h2>Problem analysis</h2>
+
+        Per comportamento della lucciola si intende accensione e spegnimento per 0.5 secondi con
+        un periodo variabile randomico. La lucciola, non interagendo con il mondo esterno, verrà rappresentata da un
+        QActor proattivo che, dopo uno stato iniziale, entra ciclicamente in uno stato "flash" all'interno
+        del quale lampeggerà cambiando il suo stato.
+
+        <h2>Test plans</h2>
+        <pre></pre>
+
+        <h2>Project</h2>
+
+        Per la visualizzazione finale viene sfruttata la griglia precedentemente realizzata.
+
+        <h2>Testing</h2>
+
+        <h2>Deployment</h2>
+
+        <h2>Maintenance</h2>
+
+        <br /><br />
+    </div>
+
+    <div class="bottom-info">
+        <img src="img/fototessera.jpg" alt="fototessera" width="80" height="80">
+        <div>
+            <strong>Alessandra Tolomelli</strong><br>
+            <small>alessandra.tolomell3@studio.unibo.it</small><br>
+            <a href="https://github.com/alessandratolomelli/iss2026" style="color: #60a5fa;">GitHub Repository</a>
+        </div>
+    </div>
+</body>
+
+</html>
