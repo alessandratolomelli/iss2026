@@ -1,0 +1,96 @@
+System firefly
+
+Dispatch cellstate : cellstate(X,Y,COLOR)
+
+Context ctxfirefly ip [ host="localhost"      port=8040 ] 
+Context ctxgrid    ip [ host="127.0.0.1"  port=8050 ]
+
+ExternalQActor griddisplay context ctxgrid
+
+QActor firefly1 context ctxfirefly {     
+	[#   
+	   var X = 10; var Y = 10
+	   var Timer = 500L 
+       var IsSync = false
+ 	#] 
+	State s0 initial {
+		[# Timer = java.util.Random().nextLong(1000L, 2000L) #]  
+		println("$name | START ASYNC: X=$X Y=$Y Timer=$Timer") color magenta
+        memoCurrentTime StartTime	// Memorizza il tempo di avvio
+	}
+	Goto flash
+
+	State flash {
+ 		forward griddisplay -m cellstate : cellstate($X,$Y,1) 				
+ 		delay 500	
+ 		forward griddisplay -m cellstate : cellstate($X,$Y,0) 
+        
+        [# val Duration = getDuration(StartTime) #]
+        if [# Duration > 10000 #] { 
+            [# IsSync = true #] 
+            println("$name | SINCRONIZZATA!") color red
+        }				
+	}
+	Goto flashSync if [# IsSync #] else waitStep
+
+    State waitStep { }
+    Transition t0 whenTimeVar Timer -> flash
+
+	State flashSync {
+		forward griddisplay -m cellstate : cellstate($X,$Y,1) 				
+ 		delay 500	
+ 		forward griddisplay -m cellstate : cellstate($X,$Y,0) 				
+	}
+	Transition t1 whenTime 1000 -> flashSync // Frequenza fissa di 1s
+}
+
+// Ripeti la stessa struttura per firefly2 e firefly3 cambiando coordinate e colori
+QActor firefly2 context ctxfirefly {  
+	[# var X = 5; var Y = 5; var Timer = 500L; var IsSync = false #] 
+	State s0 initial {
+		[# Timer = java.util.Random().nextLong(1000L, 2000L) #]  
+		println("$name | START ASYNC") color blue
+        memoCurrentTime StartTime
+    } 
+    Goto flash
+	State flash {
+ 		forward griddisplay -m cellstate : cellstate($X,$Y,1) 				
+ 		delay 500	
+ 		forward griddisplay -m cellstate : cellstate($X,$Y,0) 
+        [# if(getDuration(StartTime) > 10000) IsSync = true #]				
+	}
+	Goto flashSync if [# IsSync #] else waitStep
+    State waitStep { }
+    Transition t0 whenTimeVar Timer -> flash
+	State flashSync {
+		forward griddisplay -m cellstate : cellstate($X,$Y,1) 				
+ 		delay 500	
+ 		forward griddisplay -m cellstate : cellstate($X,$Y,0) 				
+	}
+	Transition t1 whenTime 1000 -> flashSync		
+}
+
+QActor firefly3 context ctxfirefly {  
+	[# var X = 2; var Y = 2; var Timer = 500L; var IsSync = false #] 
+	State s0 initial {
+		[# Timer = java.util.Random().nextLong(1000L, 2000L) #]  
+		println("$name | START ASYNC") color cyan
+        memoCurrentTime StartTime
+    } 
+    Goto flash
+	State flash {
+ 		forward griddisplay -m cellstate : cellstate($X,$Y,1) 				
+ 		delay 500	
+ 		forward griddisplay -m cellstate : cellstate($X,$Y,0) 
+        [# if(getDuration(StartTime) > 10000) IsSync = true #]				
+	}
+	Goto flashSync if [# IsSync #] else waitStep
+    State waitStep { }
+    Transition t0 whenTimeVar Timer -> flash
+	State flashSync {
+		forward griddisplay -m cellstate : cellstate($X,$Y,1) 				
+ 		delay 500	
+ 		forward griddisplay -m cellstate : cellstate($X,$Y,0) 				
+	}
+	Transition t1 whenTime 1000 -> flashSync		
+}
