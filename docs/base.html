@@ -8,7 +8,7 @@
 
 <body>
     <div id="top">
-        <h1>FireflySync</h1>
+        <h1>Firefly</h1>
     </div>
 
     <div class="body">
@@ -29,21 +29,69 @@ R2  Estendere il modello per:
         <h2>Requirement analysis</h2>
 
         <p>In questo Sprint viene preso in considerazione principalmente il requisito R1. Il secondo
-            requisito verrà analizzato in un secondo momento concentrandosi principalmente sulla
-            sincronizzazione del lampeggiamento.</p>
-        <p>Il modello qak del sistema deve avere nome firefly e le lucciole devono essere rappresentate da actors che
-            lampeggiano inizialmente con una propria frequenza variabile a intervalli di tempo variabili</p>
+            requisito verrà analizzato in un secondo momento, concentrandosi sulla sincronizzazione
+            del lampeggiamento tra più lucciole.</p>
+
+        <p>Il modello qak del sistema deve avere nome <b>firefly</b> e le lucciole devono essere rappresentate
+            da attori indipendenti che lampeggiano con una frequenza variabile nel tempo.</p>
+
+        <p>Un esempio di attore che rappresenta una lucciola è il seguente:</p>
+
+        <pre><code>
+QActor firefly1 context ctxfirefly  {     
+
+    [#   
+       var  X          = 1
+       var  Y          = 1
+       var Timer       = 500L 
+    #] 
+
+    State s0 initial{
+        [# Timer = java.util.Random().nextLong(800L,1500L )  #]  
+        println("$name | X=$X Y=$Y  Timer=$Timer") color magenta    
+    }
+    Goto flash
+    
+    State flash{
+        [# Timer = java.util.Random().nextLong(500L,1000L )  #] 
+        delayVar Timer
+
+        println("$name | turnOn $Timer") color cyan
+        forward griddisplay -m cellstate : cellstate($X,$Y,1)             
+
+        delayVar Timer    
+
+        forward griddisplay -m cellstate : cellstate($X,$Y,0)     
+    }
+
+    Transition t0 
+        whenTimeVar Timer -> flash          
+}
+</code></pre>
 
 
         <h2>Problem analysis</h2>
 
-        Per comportamento della lucciola si intende accensione e spegnimento per 0.5 secondi con
-        un periodo variabile randomico. La lucciola, non interagendo con il mondo esterno, verrà rappresentata da un
-        QActor proattivo che, dopo uno stato iniziale, entra ciclicamente in uno stato "flash" all'interno
-        del quale lampeggerà cambiando il suo stato.
+        <p>Per comportamento della lucciola si intende un'alternanza tra stato acceso e spento,
+            in cui ogni stato dura circa 0.5 secondi con un periodo variabile di tipo randomico.</p>
+
+        <p>La lucciola, non interagendo con altri attori in questa fase, viene modellata come un
+            QActor proattivo che, dopo uno stato iniziale, entra ciclicamente in uno stato flash,
+            all'interno del quale modifica il proprio stato (acceso/spento).</p>
+
+        <ul>
+            <li>la durata del lampeggio è gestita tramite un timer variabile;</li>
+            <li>la variabilità è introdotta tramite generazione randomica;</li>
+            <li>lo stato della lucciola viene visualizzato tramite un attore esterno (<a
+                    href="https://github.com/alessandratolomelli/iss2026/blob/main/griddisplay/src/griddisplay.qak"
+                    target="_blank">
+                    griddisplay
+                </a>).</li>
+        </ul>
+
 
         <h2>Test plans</h2>
-        <pre></pre>
+
 
         <h2>Project</h2>
 
