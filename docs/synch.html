@@ -27,16 +27,47 @@ R3 Dopo 10 secondi le tre lucciole devono essere sicnronizzate e lampeggiare all
         </pre>
 
         <h2>Requirement analysis</h2>
-        <pre>
 
-Di quante entità ho bisogno? Sicuramente tre: una per ogni lucciola. Queste ultime vengono modellate come attori
-poichè indipendenti. Il requisito R3 pone il problema della sincronizzazione, le opzioni potrebbero essere:
+        Di quante entità ho bisogno? Sicuramente tre: una per ogni lucciola. Queste ultime vengono modellate come attori
+        poichè indipendenti. Un esempio di attore è il seguente:
 
-1. un orchestratore o lucciola regina che dopo 10 secondi comunica alle altre le frequenza da utilizzare,
-2. un orchestratore o lucciola regina che dopo 10 secondi emette degli impulsi con una propria frequenza,
-3. dopo 10 secondi le lucciole commutano su una sequenza concordata,
-4. dopo 10 secondi le lucciole modificano la loro frequenza sulla base di quella dei vicini
-</pre>
+        <code>
+QActor firefly1 context ctxfirefly {
+    [#
+       var X = 10
+       var Y = 10
+    #]
+    State s0 initial {
+        println("$name | X=$X Y=$Y") color magenta
+    }
+    Goto wait_sync
+
+    State wait_sync {
+        println("$name | aspetto sync...") color magenta
+    }
+    Transition t0
+        whenEvent sync -> flash
+
+    State flash {
+        forward griddisplay -m cellstate : cellstate($X,$Y,1)
+        delay 500
+        forward griddisplay -m cellstate : cellstate($X,$Y,0)
+    }
+    Goto wait_sync
+}
+</code>
+
+        Il requisito R3 pone il problema della sincronizzazione, le opzioni potrebbero essere:
+
+        <ul>
+            <li>un orchestratore o lucciola regina che dopo 10 secondi comunica alle altre le frequenza da utilizzare,
+            </li>
+            <li>un orchestratore o lucciola regina che dopo 10 secondi emette degli impulsi con una propria frequenza,
+            </li>
+            <li>dopo 10 secondi le lucciole commutano su una sequenza concordata,</li>
+            <li>dopo 10 secondi le lucciole modificano la loro frequenza sulla base di quella dei vicini</li>
+        </ul>
+
 
         <h2>Problem analysis</h2>
 
@@ -45,21 +76,24 @@ poichè indipendenti. Il requisito R3 pone il problema della sincronizzazione, l
 
         Questa scelta è motivata da:
 
-        - semplicità implementativa: la sincronizzazione è ottenuta tramite un unico punto di controllo;
-        - chiarezza del comportamento: tutte le lucciole reagiscono allo stesso evento globale;
-        - riduzione della complessità: non è necessario gestire interazioni tra le lucciole.
+        <ul>
+            <li>semplicità implementativa: la sincronizzazione è ottenuta tramite un unico punto di controllo;</li>
+            <li>chiarezza del comportamento: tutte le lucciole reagiscono allo stesso evento globale;</li>
+            <li>riduzione della complessità: non è necessario gestire interazioni tra le lucciole.</li>
+        </ul>
 
         L'orchestratore (coordinator) emette periodicamente un evento di tipo "sync",
         che rappresenta un impulso di sincronizzazione globale.
 
         Le lucciole sono modellate come attori reattivi che:
-        - attendono l'evento di sincronizzazione;
-        - al ricevimento dell'evento, eseguono il lampeggio (flash);
-        - notificano il proprio stato a un attore esterno (griddisplay).
+        <ul>
+            <li>attendono l'evento di sincronizzazione;</li>
+            <li>al ricevimento dell'evento, eseguono il lampeggio (flash);</li>
+            <li>notificano il proprio stato a un attore esterno (griddisplay).</li>
+        </ul>
 
         Questa soluzione realizza una sincronizzazione centralizzata, in cui il comportamento
         globale è determinato dall'orchestratore.
-        <pre></pre>
 
         <h2>Project</h2>
 
