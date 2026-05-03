@@ -4,7 +4,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="css/mystyle.css">
 </head>
-<title>FireflySync</title>
+<title>Firefly</title>
 
 <body>
     <div id="top">
@@ -32,13 +32,13 @@ R2  Estendere il modello per:
             requisito verrà analizzato in un secondo momento, concentrandosi sulla sincronizzazione
             del lampeggiamento tra più lucciole.</p>
 
-        <p>Il modello qak del sistema deve avere nome <b>firefly</b> e le lucciole devono essere rappresentate
+        <p>Il modello qak del sistema deve avere nome firefly e le lucciole devono essere rappresentate
             da attori indipendenti che lampeggiano con una frequenza variabile nel tempo.</p>
 
         <p>Un esempio di attore che rappresenta una lucciola è il seguente:</p>
 
         <pre><code>
-QActor firefly1 context ctxfirefly  {     
+QActor firefly context ctxfirefly  {     
 
     [#   
        var  X          = 1
@@ -82,11 +82,11 @@ QActor firefly1 context ctxfirefly  {
         <ul>
             <li>la durata del lampeggio è gestita tramite un timer variabile;</li>
             <li>la variabilità è introdotta tramite generazione randomica;</li>
-            <li>lo stato della lucciola viene visualizzato tramite un attore esterno (<a
+            <li>lo stato della lucciola viene visualizzato tramite un attore esterno <a
                     href="https://github.com/alessandratolomelli/iss2026/blob/main/griddisplay/src/griddisplay.qak"
                     target="_blank">
                     griddisplay
-                </a>).</li>
+                </a>.</li>
         </ul>
 
 
