@@ -29,60 +29,41 @@ class Firefly3 ( name: String, scope: CoroutineScope, isconfined: Boolean=false,
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		//val interruptedStateTransitions = mutableListOf<Transition>()
 		//IF actor.withobj !== null val actor.withobj.name� = actor.withobj.method�ENDIF
-		 var X = 2; var Y = 2; var Timer = 500L; var IsSync = false  
+		
+			   var X = 2
+			   var Y = 2
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						 Timer = java.util.Random().nextLong(1000L, 2000L)  
-						CommUtils.outcyan("$name | START ASYNC")
-						StartTime = getCurrentTime()
+						CommUtils.outblue("$name | X=$X Y=$Y")
 						//genTimer( actor, state )
 					}
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition( edgeName="goto",targetState="flash", cond=doswitch() )
+					 transition( edgeName="goto",targetState="wait_sync", cond=doswitch() )
+				}	 
+				state("wait_sync") { //this:State
+					action { //it:State
+						CommUtils.outblue("$name | aspetto sync...")
+						//genTimer( actor, state )
+					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
+					 transition(edgeName="t02",targetState="flash",cond=whenEvent("sync"))
 				}	 
 				state("flash") { //this:State
 					action { //it:State
 						forward("cellstate", "cellstate($X,$Y,1)" ,"griddisplay" ) 
 						delay(500) 
 						forward("cellstate", "cellstate($X,$Y,0)" ,"griddisplay" ) 
-						 if(getDuration(StartTime) > 10000) IsSync = true  
 						//genTimer( actor, state )
 					}
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition( edgeName="goto",targetState="flashSync", cond=doswitchGuarded({ IsSync  
-					}) )
-					transition( edgeName="goto",targetState="waitStep", cond=doswitchGuarded({! ( IsSync  
-					) }) )
-				}	 
-				state("waitStep") { //this:State
-					action { //it:State
-						//genTimer( actor, state )
-					}
-					//After Lenzi Aug2002
-					sysaction { //it:State
-				 	 		stateTimer = TimerActor("timer_waitStep", 
-				 	 					  scope, context!!, "local_tout_"+name+"_waitStep", Timer )  //OCT2023
-					}	 	 
-					 transition(edgeName="t04",targetState="flash",cond=whenTimeout("local_tout_"+name+"_waitStep"))   
-				}	 
-				state("flashSync") { //this:State
-					action { //it:State
-						forward("cellstate", "cellstate($X,$Y,1)" ,"griddisplay" ) 
-						delay(500) 
-						forward("cellstate", "cellstate($X,$Y,0)" ,"griddisplay" ) 
-						//genTimer( actor, state )
-					}
-					//After Lenzi Aug2002
-					sysaction { //it:State
-				 	 		stateTimer = TimerActor("timer_flashSync", 
-				 	 					  scope, context!!, "local_tout_"+name+"_flashSync", 1000.toLong() )  //OCT2023
-					}	 	 
-					 transition(edgeName="t15",targetState="flashSync",cond=whenTimeout("local_tout_"+name+"_flashSync"))   
+					 transition( edgeName="goto",targetState="wait_sync", cond=doswitch() )
 				}	 
 			}
 		}

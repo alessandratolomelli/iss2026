@@ -33,13 +33,15 @@ class Creator ( name: String, scope: CoroutineScope, isconfined: Boolean=false, 
 				state("s0") { //this:State
 					action { //it:State
 						   
-								 clearlog("./logs/app_firefly.log") 	//vedi src/main/resources/logback.xml
+								 clearlog("./logs/app_actorgrid.log") 	//vedi src/main/resources/logback.xml
 						delay(500) 
-						createActorDynamically("firefly", "_1", false)
-						createActorDynamically("firefly", "_2", false)
-						createActorDynamically("firefly", "_3", false)
-						createActorDynamically("firefly", "_4", false)
-						createActorDynamically("firefly", "_5", false)
+						
+							    	for( i in 0..19 ){
+							    		for( j in 0..19 ){
+							    			CommUtils.outcyan("$name | CREATES firefly_${i}_${j}")  
+							    			createActorDynamically( "firefly", "_${i}_${j}", false)
+							    		}
+							    	}		 
 						//genTimer( actor, state )
 					}
 					//After Lenzi Aug2002

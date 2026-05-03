@@ -1,5 +1,5 @@
 %====================================================================================
-% firefly description   
+% fireflysync description   
 %====================================================================================
 dispatch( cellstate, cellstate(X,Y,COLOR) ). %commute cell state
 event( sync, sync(V) ). %evento di sincronizzazione globale

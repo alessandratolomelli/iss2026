@@ -14,30 +14,51 @@
     <div class="body">
 
         <h2>Introduction</h2>
-        <b>Goal</b>: Realizzazione in Java del
-        <a href='https://anatali.github.io/issLab2026/_static/docs/Protobook.pdf#chapter.6'>GAME OF LIFE DI CONWAY</a>
-        limitatamente al <b>requisito R1</b>.
+        <b>Goal</b>: Costruire un sistema costituito da 3 lucciole, che si devono sincronizzare dopo 10 secondi.
 
         <h2>Requirements</h2>
 
         <pre>
-Definire un modello qak di un sistema firefly che simula un sistema costituito da 3 lucciole. Inizialmente, le lucciole lampeggiano ciascuna con una frequenza costante propria, mentre dopo 10 secondi le lucciole devono lampeggiare in modo sincronizzato.
+R1  Simulare il comportamento di tre lucciole attraverso la definizione di un modello qak.
 
+R2  Inizialmente le lucciole lampeggiano ciascuna con una frequenza costante propria.
+
+R3 Dopo 10 secondi le tre lucciole devono essere sicnronizzate e lampeggiare alla stessa frequenza.
         </pre>
 
         <h2>Requirement analysis</h2>
         <pre>
 
-        Il modello qak del sistema deve avere nome firefly e le lucciole devono essere rappresentate da actors che lampeggiano,
-        inizialmente con una propria frequenza variabile a intervalli di tempo variabili
+Di quante entità ho bisogno? Sicuramente tre: una per ogni lucciola. Queste ultime vengono modellate come attori
+poichè indipendenti. Il requisito R3 pone il problema della sincronizzazione, le opzioni potrebbero essere:
 
-
+1. un orchestratore o lucciola regina che dopo 10 secondi comunica alle altre le frequenza da utilizzare,
+2. un orchestratore o lucciola regina che dopo 10 secondi emette degli impulsi con una propria frequenza,
+3. dopo 10 secondi le lucciole commutano su una sequenza concordata,
+4. dopo 10 secondi le lucciole modificano la loro frequenza sulla base di quella dei vicini
 </pre>
 
         <h2>Problem analysis</h2>
-        <img src="./img/problem analysis.png" alt="Problem Analysis" width="40%" height="40%">
 
-        <h2>Test plans</h2>
+        Dopo una valutazione delle possibili soluzioni, è stata scelta l'opzione 2, che prevede
+        l'introduzione di un orchestratore centrale modellato come attore.
+
+        Questa scelta è motivata da:
+
+        - semplicità implementativa: la sincronizzazione è ottenuta tramite un unico punto di controllo;
+        - chiarezza del comportamento: tutte le lucciole reagiscono allo stesso evento globale;
+        - riduzione della complessità: non è necessario gestire interazioni tra le lucciole.
+
+        L'orchestratore (coordinator) emette periodicamente un evento di tipo "sync",
+        che rappresenta un impulso di sincronizzazione globale.
+
+        Le lucciole sono modellate come attori reattivi che:
+        - attendono l'evento di sincronizzazione;
+        - al ricevimento dell'evento, eseguono il lampeggio (flash);
+        - notificano il proprio stato a un attore esterno (griddisplay).
+
+        Questa soluzione realizza una sincronizzazione centralizzata, in cui il comportamento
+        globale è determinato dall'orchestratore.
         <pre></pre>
 
         <h2>Project</h2>
