@@ -15,10 +15,13 @@
 
         <h2>Introduction</h2>
         <b>Goal</b>: definire un modello qak per un sistema che comanda un Differential Drive Robot per
-        navigare lungo il perimetro di una stanza rettangolare</b>.
+        navigare lungo il perimetro di una stanza rettangolare.
 
         <h2>Requirements</h2>
         <pre>
+            Costruire un sistema software che comanda un Differential Drive Robot (DDR) in modo che, 
+partendo dalla posizione iniziale HOME, il robot si sposti lungo il perimetro di una stanza rettangolare vuota. 
+Il DDR si deve fermare quando tornato in HOME.
 Il DDR è anche sensibile ai dati rilevati da un Radar.
 Quando il Radar rileva un 'intruso' a una distanza minore di una distanza prefissata DMIN:
   
@@ -28,14 +31,15 @@ Quando il Radar rileva un 'intruso' a una distanza minore di una distanza prefis
 
         <h2>Requirement analysis</h2>
 
-        <p>Il DDR è modellato come un attore capace di eseguire comandi di movimento base: avanti, indietro, stop, e
-            rotazione
-            (destra/sinistra).</p>
+        <p>Il DDR è modellato come un attore proattivo capace di eseguire comandi di movimento base: avanti, indietro,
+            stop, e
+            rotazione (destra/sinistra).</p>
         <p> Lo stato HOME rappresenta il punto di cooordinate (0,0) </p>
         <p> Il perimetro implica che il robot esegue quattro segmenti rettilinei e tre rotazioni di 90°. il
             completamento del quarto
             segmento lo riporta nello stato HOME.</p>
-        <p> Il Radar è una sorgente di dati che fornisce la distanza di un ostacolo.</p>
+        <p> Il Radar è una sorgente di dati che fornisce la distanza di un ostacolo comunicando tramite scambio di
+            messaggi.</p>
 
 
 
