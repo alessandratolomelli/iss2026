@@ -19,14 +19,11 @@
 
         <h2>Requirements</h2>
         <pre>
-R1  Partendo da una posizione iniziale HOME, il DDR deve percorrere il perimetro di una stanza rettangolare vuota e fermarsi una volta tornato al punto di partenza.
-R2  Il sistema deve monitorare i dati di un Radar. Se viene rilevato un "intruso" a una distanza prefissata &lt; DMIN:
-<ul>
-<li>Se il robot è in movimento, deve arrestarsi immediatamente,
-<li>Se il robot è già fermo in HOME, deve ruotare su se stesso fino a che un intruso così vicino scompare,
-<li>Il robot deve riprendere il movimento o smettere di ruotare solo quando il Radar non rileva più l'intruso entro la distanza DMIN.
-</li>
-</ul>
+Il DDR è anche sensibile ai dati rilevati da un Radar.
+Quando il Radar rileva un 'intruso' a una distanza minore di una distanza prefissata DMIN:
+  
+  - se il DDR si sta muovendo , il DDR si ferma fino a che il Radar non rileva più un 'intruso' così vicino, 
+  - se il DDR è fermo in HOME, il DDR ruota su sè stesso fino a che un 'intruso' così vicino scompare.
 </pre>
 
         <h2>Requirement analysis</h2>
@@ -49,6 +46,7 @@ R2  Il sistema deve monitorare i dati di un Radar. Se viene rilevato un "intruso
 
 
         <h2>Project</h2>
+
 
         <h2>Testing</h2>
 
