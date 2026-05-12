@@ -29,116 +29,35 @@ class Firefly2 ( name: String, scope: CoroutineScope, isconfined: Boolean=false,
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		//val interruptedStateTransitions = mutableListOf<Transition>()
 		//IF actor.withobj !== null val actor.withobj.name� = actor.withobj.method�ENDIF
-		
-				var X             = 5
-				var Y             = 5
-				var Timer         = 3000L
-				var currentPeriod = 3000L
-				var targetPeriod  = 0L
-				val K             = 0.15
-				val K_trans       = 0.35
-				var inTransition  = false
-				var MyName        = ""
+		 
+			   var  X          = 5
+			   var  Y          = 5
+			   var Timer       = 500L 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						 MyName = name  
-						CommUtils.outblue("$MyName | periodo iniziale=3000ms")
+						 Timer = java.util.Random().nextLong(1000L,2000L )   
+						CommUtils.outblue("$name | X=$X Y=$Y  Timer=$Timer")
 						//genTimer( actor, state )
 					}
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition( edgeName="goto",targetState="waitToFlash", cond=doswitch() )
-				}	 
-				state("waitToFlash") { //this:State
-					action { //it:State
-						//genTimer( actor, state )
-					}
-					//After Lenzi Aug2002
-					sysaction { //it:State
-				 	 		stateTimer = TimerActor("timer_waitToFlash", 
-				 	 					  scope, context!!, "local_tout_"+name+"_waitToFlash", Timer )  //OCT2023
-					}	 	 
-					 transition(edgeName="t05",targetState="flash",cond=whenTimeout("local_tout_"+name+"_waitToFlash"))   
-					transition(edgeName="t06",targetState="handleFlashObserved",cond=whenEvent("flashEvent"))
-					transition(edgeName="t07",targetState="handleSyncNow",cond=whenEvent("syncNow"))
-					transition(edgeName="t08",targetState="handleSyncComplete",cond=whenEvent("syncComplete"))
+					 transition( edgeName="goto",targetState="flash", cond=doswitch() )
 				}	 
 				state("flash") { //this:State
 					action { //it:State
-						
-									val MOn  = "cellstate($X,$Y,1)"
-									val MOff = "cellstate($X,$Y,0)"
-									val FEv  = "flashEvent($MyName)"
-						forward("cellstate", "$MOn" ,"griddisplay" ) 
+						forward("cellstate", "cellstate($X,$Y,1)" ,"griddisplay" ) 
 						delay(500) 
-						forward("cellstate", "$MOff" ,"griddisplay" ) 
-						emit("flashEvent", "$FEv" ) 
-						
-									if (inTransition) {
-										currentPeriod = (currentPeriod * (1.0 - K_trans) + targetPeriod * K_trans).toLong()
-									}
-									Timer = currentPeriod
-						CommUtils.outblue("$MyName | flash -> currentPeriod=$currentPeriod ms")
+						forward("cellstate", "cellstate($X,$Y,0)" ,"griddisplay" ) 
 						//genTimer( actor, state )
 					}
 					//After Lenzi Aug2002
 					sysaction { //it:State
+				 	 		stateTimer = TimerActor("timer_flash", 
+				 	 					  scope, context!!, "local_tout_"+name+"_flash", Timer )  //OCT2023
 					}	 	 
-					 transition( edgeName="goto",targetState="waitToFlash", cond=doswitch() )
-				}	 
-				state("handleFlashObserved") { //this:State
-					action { //it:State
-						if( checkMsgContent( Term.createTerm("flashEvent(SOURCE)"), Term.createTerm("flashEvent(SOURCE)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								
-												val src = payloadArg(0)
-												if (src != MyName) {
-													Timer = (Timer * (1.0 - K)).toLong()
-													if (Timer < 0L) Timer = 0L
-												}
-						}
-						//genTimer( actor, state )
-					}
-					//After Lenzi Aug2002
-					sysaction { //it:State
-					}	 	 
-					 transition( edgeName="goto",targetState="waitToFlash", cond=doswitch() )
-				}	 
-				state("handleSyncNow") { //this:State
-					action { //it:State
-						if( checkMsgContent( Term.createTerm("syncNow(TARGET)"), Term.createTerm("syncNow(TARGET)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								
-												targetPeriod = payloadArg(0).toLong()
-												inTransition = true
-												Timer        = 100L
-								CommUtils.outyellow("$MyName | transizione -> target=$targetPeriod ms")
-						}
-						//genTimer( actor, state )
-					}
-					//After Lenzi Aug2002
-					sysaction { //it:State
-					}	 	 
-					 transition( edgeName="goto",targetState="waitToFlash", cond=doswitch() )
-				}	 
-				state("handleSyncComplete") { //this:State
-					action { //it:State
-						if( checkMsgContent( Term.createTerm("syncComplete(TICK)"), Term.createTerm("syncComplete(V)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								
-												inTransition  = false
-												currentPeriod = targetPeriod
-												Timer         = targetPeriod
-								CommUtils.outyellow("$MyName | LOCKED su $currentPeriod ms")
-						}
-						//genTimer( actor, state )
-					}
-					//After Lenzi Aug2002
-					sysaction { //it:State
-					}	 	 
-					 transition( edgeName="goto",targetState="waitToFlash", cond=doswitch() )
+					 transition(edgeName="t01",targetState="flash",cond=whenTimeout("local_tout_"+name+"_flash"))   
 				}	 
 			}
 		}

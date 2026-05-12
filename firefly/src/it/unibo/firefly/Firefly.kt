@@ -29,23 +29,22 @@ class Firefly ( name: String, scope: CoroutineScope, isconfined: Boolean=false, 
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		//val interruptedStateTransitions = mutableListOf<Transition>()
 		//IF actor.withobj !== null val actor.withobj.name� = actor.withobj.method�ENDIF
-		 
+		   
 			   var  X          = 0
 			   var  Y          = 0
 			   var Timer       = 500L 
 			   
-			    fun setCellCoords( )  {
-		     		val coords = name.replace("firefly_","").split("_")   
-		     		X  = coords[0].toInt()
-		     		Y  = coords[1].toInt()        
+			   fun setCellCoords( )  {
+		     		val coordY = name.replace("firefly_","")    
+		      		Y  = coordY.toInt()        
 		  		}		
+			   
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						 Timer = java.util.Random().nextLong(1000L,2000L )   
 						 setCellCoords( )                                    
+						 Timer = java.util.Random().nextLong(1000L,2000L )   
 						CommUtils.outmagenta("$name | X=$X Y=$Y  Timer=$Timer")
-						 logger.info(  "$name  created $X,$Y "  )  
 						//genTimer( actor, state )
 					}
 					//After Lenzi Aug2002

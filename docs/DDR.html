@@ -14,35 +14,118 @@
     <div class="body">
 
         <h2>Introduction</h2>
-        <b>Goal</b>: definire un modello qak per un sistema che comanda un Differential Drive Robot per
-        navigare lungo il perimetro di una stanza rettangolare.
+        <b>Goal</b>: definire un sistema software che comanda un Differential Drive Robot per
+        navigare lungo il perimetro di una stanza rettangolare vuota.
 
         <h2>Requirements</h2>
-        <pre>
-            Costruire un sistema software che comanda un Differential Drive Robot (DDR) in modo che, 
-partendo dalla posizione iniziale HOME, il robot si sposti lungo il perimetro di una stanza rettangolare vuota. 
-Il DDR si deve fermare quando tornato in HOME.
-Il DDR è anche sensibile ai dati rilevati da un Radar.
-Quando il Radar rileva un 'intruso' a una distanza minore di una distanza prefissata DMIN:
-  
-  - se il DDR si sta muovendo , il DDR si ferma fino a che il Radar non rileva più un 'intruso' così vicino, 
-  - se il DDR è fermo in HOME, il DDR ruota su sè stesso fino a che un 'intruso' così vicino scompare.
-</pre>
+
+        Costruire un sistema software che comanda un Differential Drive Robot (DDR) in modo che,
+        partendo dalla posizione iniziale HOME, il robot si sposti lungo il perimetro di una stanza rettangolare vuota.
+        Il DDR si deve fermare quando tornato in HOME.
+        Il DDR è anche sensibile ai dati rilevati da un Radar.
+        Quando il Radar rileva un 'intruso' a una distanza minore di una distanza prefissata DMIN:
+
+        <ul>
+            <li>se il DDR si sta muovendo , il DDR si ferma fino a che il Radar non rileva più un 'intruso' così vicino,
+            </li>
+            <li>se il DDR è fermo in HOME, il DDR ruota su sè stesso fino a che un 'intruso' così vicino scompare.</li>
+        </ul>
+
 
         <h2>Requirement analysis</h2>
 
-        <p>Il DDR è modellato come un attore proattivo capace di eseguire comandi di movimento base: avanti, indietro,
-            stop, e
-            rotazione (destra/sinistra).</p>
-        <p> Lo stato HOME rappresenta il punto di cooordinate (0,0) </p>
-        <p> Il perimetro implica che il robot esegue quattro segmenti rettilinei e tre rotazioni di 90°. il
-            completamento del quarto
-            segmento lo riporta nello stato HOME.</p>
-        <p> Il Radar è una sorgente di dati che fornisce la distanza di un ostacolo comunicando tramite scambio di
-            messaggi.</p>
+        Il sistema è composto dalle seguenti entità:
 
+        <ul>
+            <li><strong>HOME</strong>: posizione in cui il DDR si trova al'inizio all'interno della stanza. Necessito di
+                trovare un modo per
+                formalizzare questa informazione: devo quindi prima trovare un modo per formalizzare la stanza.
+                Posso modellarla come un rettangolo in un piano euclideo con base B e altezza H, dove entrambe le misure
+                sono espresse in metri. Mi verrebbe spontaneo indicare questa posizione come un punto di coordinate X e
+                Y,
+                ma devo tenere conto del fatto che il robot occuperà un'area che assumo quadrata di lato R, unità di
+                misura
+                che utilizzerò per misurare anche la stanza. Risulterà quindi naturale andare a rappresentare la stanza
+                come
+                una griglia, dove ogni cella sarà un'unità robotica. HOME sarà quindi un'area in grado di contenere il
+                robot, ovvero una cella predefinta all'interno della griglia che rappresenta la stanza.</li>
 
+            <li><strong>Stanza</strong>: Cosa intende il committente per stanza? La stanza è lo spazio che il DDR ha a
+                disposizione, all'interno del quale si muove. Viene definita come rettangolare e dotata di quattro lati.
+                Al fine della modellazione utilizzeremo una coppia di variabili B e H che indicano, rispettivamente, la
+                lunghezza della base e dell'altezza della stanza. Come già anticipato, l'unità di misura utilizzata sarà
+                quella robotica. Ne risulta la seguente formalizzazione:
+                <br><br>
+                <code>
+<pre>
+[# 
+    data class RoomConfig(
+        val widthCells: Double, 
+        val heightCells: Double, 
+        val cellSideMeters: Double
+    ) {
+        val totalWidthMeters: Double = widthCells * cellSideMeters
+        val totalHeightMeters: Double = heightCells * cellSideMeters
+        val homePoint: Point = Point(0, 0)
+    }
 
+    data class Point(val x: Int, val y: Int)
+#]
+</pre>
+    </code>
+            </li>
+
+            <li><strong>Radar</strong>: è un'entità proattiva che controlla, a intervalli regolari, i dintorni del DDR e
+                rileva eventuali
+                'intrusi' che si trovano ad una distanza inferiore a DMIN.
+                Il radar, quindi, rende disponibili delle informazioni al sistema (la distanza D rilevata).
+                Decido di formalizzare il radar come un attore.
+                Poiché è necesario che le informazioni possano essere utilizzate dal sistema (per variare il
+                comportamento
+                del DDR), è necessario formalizzare il metodo con cui questi dati sono accessibili. Consideriamo che sia
+                il radar a comunicare, tramite un evento (poiché non conosce il destinatario
+                dell'informazione) la distanza rilevata.
+                <code>
+<pre>
+System ddrsystem
+
+System ddrsystem
+
+Event infoRadar : distance(D)
+
+Context ctxddr ip [ host="localhost" port=8010 ]
+
+QActor radar context ctxddr {
+    [# 
+        var D = 0
+        val T = 1000L
+    #]
+    
+    State s0 initial {
+        println("$name | attivo") color green
+    }
+    Goto sendDistance
+    
+    State sendDistance {
+        // Invio del dato rilevato tramite evento
+        emit infoRadar : distance(D)
+    }
+    Transition t0 
+        whenTimeVar T -> sendDistance
+}
+</pre>
+    </code>
+            </li>
+            <li><strong>DDR</strong>: Cosa intende il committente per <a
+                    href="https://github.com/anatali/issLab2026/tree/main/it.unibo.virtualRobot2026">DDR</a>?
+                Dai requisiti si evince che è un'entità reattiva, priva della capacità di fare cose: è un semplice
+                attuatore di comandi. Il <strong>DDR</strong> è capace di: muoversi in avanti e di ruotare su sè stesso
+                di 90°.
+                Parlando con il committente si arriva alla conclusione che il <strong>DDR</strong> è fornito dal
+                committente stesso ed è
+                inscrivibile in un quadrato. </li>
+
+        </ul>
         <h2>Problem analysis</h2>
 
 

@@ -1,0 +1,66 @@
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'application' // Abilitato per permettere il comando 'run'
+}
+
+repositories {
+    mavenCentral()
+    // Rimuoviamo il flatDir esterno
+}
+
+version '1.0'
+sourceCompatibility = 1.8
+
+// Definizione della classe principale
+mainClassName = 'it.unibo.virtualRobot2026.TestMovesUsingWs26'
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.3' 
+    testImplementation group: 'com.squareup.okhttp3', name: 'mockwebserver', version: '4.9.3'
+    
+    implementation group: 'javax.websocket', name: 'javax.websocket-api', version: '1.1'
+    implementation group: 'org.glassfish.tyrus.bundles', name: 'tyrus-standalone-client', version: '1.9'
+    implementation group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.6.0'
+
+    implementation 'org.apache.httpcomponents:httpclient:4.5'
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+    // CUSTOM unibo libs
+    implementation fileTree(dir: 'unibolibs', include: ['*.jar'])
+}
+
+sourceSets {
+    main.java.srcDirs = ['javasrc'] // Cartella sorgenti corretta per ISS
+    test.java.srcDirs = ['test']
+}
+
+// Correzione blocco Eclipse per evitare l'errore multiply()
+eclipse {
+    classpath {
+        minusConfigurations += [configurations.runtimeClasspath]
+    }
+}
+
+jar {
+    from sourceSets.main.allSource
+    manifest { 
+        attributes 'Main-Class': "$mainClassName" 
+    }
+}
+
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+run {
+    standardOutput = System.out
+    errorOutput = System.err
+}
